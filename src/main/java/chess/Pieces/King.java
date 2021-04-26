@@ -1,4 +1,4 @@
-package colinsantee.chess.Pieces;
+package chess.Pieces;
 
 public class King extends Piece {
     private boolean castlingDone = false;

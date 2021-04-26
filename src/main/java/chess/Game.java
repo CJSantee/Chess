@@ -1,8 +1,8 @@
-package colinsantee.chess;
+package chess;
 
 import java.util.List;
 
-import colinsantee.chess.Player.Player;
+import chess.Player.Player;
 
 public class Game {
     private Player[] players;

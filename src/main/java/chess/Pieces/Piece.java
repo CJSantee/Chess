@@ -1,4 +1,4 @@
-package colinsantee.chess.Pieces;
+package chess.Pieces;
 
 public abstract class Piece {
     private boolean killed = false;

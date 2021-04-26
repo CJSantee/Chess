@@ -1,5 +1,5 @@
-package colinsantee.chess;
-import colinsantee.chess.Pieces.*;
+package chess;
+import chess.Pieces.*;
 
 public class Board {
     Spot[][] boxes;

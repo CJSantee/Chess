@@ -1,6 +1,6 @@
-package colinsantee.chess;
+package chess;
 
-import colinsantee.chess.Player.HumanPlayer;
+import chess.Player.HumanPlayer;
 
 /**
  * Hello world!

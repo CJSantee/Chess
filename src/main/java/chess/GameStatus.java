@@ -1,4 +1,4 @@
-package colinsantee.chess;
+package chess;
 
 public enum GameStatus {
     ACTIVE,

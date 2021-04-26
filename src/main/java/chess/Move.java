@@ -1,6 +1,6 @@
-package colinsantee.chess;
-import colinsantee.chess.Pieces.Piece;
-import colinsantee.chess.Player.Player;
+package chess;
+import chess.Pieces.Piece;
+import chess.Player.Player;
 
 public class Move {
     private Player player;

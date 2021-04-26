@@ -1,4 +1,4 @@
-package colinsantee.chess.Player;
+package chess.Player;
 
 public class HumanPlayer extends Player {
     public HumanPlayer(boolean whiteSide){

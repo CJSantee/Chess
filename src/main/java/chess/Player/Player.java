@@ -1,4 +1,4 @@
-package colinsantee.chess.Player;
+package chess.Player;
 
 public abstract class Player {
     public boolean whiteSide;

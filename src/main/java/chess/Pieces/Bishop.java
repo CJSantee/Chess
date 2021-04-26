@@ -1,4 +1,4 @@
-package colinsantee.chess.Pieces;
+package chess.Pieces;
 
 public class Bishop extends Piece {
     public Bishop(boolean white){
