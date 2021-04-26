@@ -11,7 +11,17 @@ public class Knight extends Piece {
     }
 
     @Override
-    public String print() {
-        return "N";
+    public String printLine(int line) {
+        switch(line){
+            case 0: return "               ";
+            case 1: return "    ,^---.     ";
+            case 2: return "   /      \\    ";
+            case 3: return "  (_/)    )    ";
+            case 4: return "    _\\   /_    ";
+            case 5: return "   (_______)   ";
+            case 6: return "               ";
+            default:
+                return "";
+        }
     }
 }

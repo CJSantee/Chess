@@ -26,6 +26,6 @@ public abstract class Piece {
 
     public abstract boolean canMove();
 
-    public abstract String print();
+    public abstract String printLine(int line);
 
 }

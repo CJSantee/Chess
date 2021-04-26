@@ -1,11 +1,13 @@
 package colinsantee.chess;
 
+import colinsantee.chess.Player.HumanPlayer;
+
 /**
  * Hello world!
  */
 public final class App {
-    private App() {
-    }
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
     /**
      * Says hello to the world.

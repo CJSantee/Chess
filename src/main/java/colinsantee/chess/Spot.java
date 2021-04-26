@@ -19,6 +19,10 @@ public class Spot {
         this.piece = piece;
     }
 
+    public boolean hasPiece() {
+        return this.piece != null;
+    }
+
     public int getX() {
         return x;
     }
@@ -32,4 +36,11 @@ public class Spot {
     public void setY(int y) {
         this.y = y;
     }
+
+    public boolean isWhite(){
+        return (x%2==y%2);
+    }
+
+
+
 }

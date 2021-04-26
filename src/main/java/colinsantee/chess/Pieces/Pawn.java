@@ -1,6 +1,7 @@
 package colinsantee.chess.Pieces;
 
 public class Pawn extends Piece {
+
     public Pawn(boolean white){
         super(white);
     }
@@ -11,7 +12,17 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public String print(){
-        return "P";
+    public String printLine(int line){
+        switch(line){
+            case 0: return "       _       ";
+            case 1: return "      ( )      ";
+            case 2: return "      )-(      ";
+            case 3: return "     /   \\     ";
+            case 4: return "    |     |    ";
+            case 5: return "    =======    ";
+            case 6: return "               ";
+            default:
+                return "";
+        }
     }
 }

@@ -21,9 +21,21 @@ public class Game {
             currentTurn = p2;
         }
 
+        board = new Board();
+
         movesPlayed.clear();
 
         status = GameStatus.ACTIVE;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+    public Player getCurrentTurn() {
+        return currentTurn;
+    }
+    public GameStatus getStatus() {
+        return status;
     }
 
 }

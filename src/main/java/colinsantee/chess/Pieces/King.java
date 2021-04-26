@@ -21,7 +21,17 @@ public class King extends Piece {
     }
 
     @Override
-    public String print() {
-        return "K";
+    public String printLine(int line) {
+        switch(line){
+            case 0: return "               ";
+            case 1: return "       +       ";
+            case 2: return "   / \\/^\\/ \\   ";
+            case 3: return "  (   \\ /   )  ";
+            case 4: return "    |__|__|    ";
+            case 5: return "   /_______\\   ";
+            case 6: return "               ";
+            default:
+                return "";
+        }
     }
 }
