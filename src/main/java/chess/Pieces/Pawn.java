@@ -1,5 +1,8 @@
 package chess.Pieces;
 
+import chess.Board;
+import chess.Spot;
+
 public class Pawn extends Piece {
 
     public Pawn(boolean white){
@@ -7,7 +10,7 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public boolean canMove(){
+    public boolean canMove(Board board, Spot start, Spot end){
         return true;
     }
 
@@ -24,5 +27,11 @@ public class Pawn extends Piece {
             default:
                 return "";
         }
+    }
+
+    @Override
+    public char printChar(){
+        if(isWhite()) return 'P';
+        else return 'p';
     }
 }

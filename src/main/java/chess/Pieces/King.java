@@ -1,5 +1,8 @@
 package chess.Pieces;
 
+import chess.Board;
+import chess.Spot;
+
 public class King extends Piece {
     private boolean castlingDone = false;
 
@@ -16,7 +19,7 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean canMove(){
+    public boolean canMove(Board board, Spot start, Spot end){
         return true;
     }
 
@@ -34,4 +37,11 @@ public class King extends Piece {
                 return "";
         }
     }
+
+    @Override
+    public char printChar(){
+        if(isWhite()) return 'K';
+        else return 'k';
+    }
+
 }

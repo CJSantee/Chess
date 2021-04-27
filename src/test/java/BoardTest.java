@@ -26,6 +26,12 @@ public class BoardTest {
     }
 
     @Test
+    void testBoard() throws Exception{
+        Throwable exception = assertThrows(Exception.class, () -> { board = new Board(" "); });
+        assertEquals("Invalid input String", exception.getMessage());
+    }
+
+    @Test
     void testGetBox() throws Exception{
         Throwable exception = assertThrows(Exception.class, () -> board.getBox(-1, -1));
         assertThrows(Exception.class, () -> board.getBox(8, 4), "x value out of bound should throw exception");
@@ -36,6 +42,7 @@ public class BoardTest {
 
     @Test
     void testResetBoard() throws Exception{
+        board.resetBoard();
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
                 assertNotNull(board.getBox(i, j), "Index (" + i + ", " + j + ") should not be null");
@@ -44,8 +51,8 @@ public class BoardTest {
         assertTrue(board.getBox(0, 0).getPiece() instanceof Rook, "(0, 0) should be a Rook");
         assertTrue(board.getBox(0, 1).getPiece() instanceof Knight, "(0, 1) should be a Knight");
         assertTrue(board.getBox(0,2).getPiece() instanceof Bishop, "(0, 2) should be a Bishop");
-        assertTrue(board.getBox(0,3).getPiece() instanceof King, "(0, 3) should be a King");
-        assertTrue(board.getBox(0,4).getPiece() instanceof Queen, "(0, 4) should be a Queen");
+        assertTrue(board.getBox(0,3).getPiece() instanceof Queen, "(0, 3) should be a Queen");
+        assertTrue(board.getBox(0,4).getPiece() instanceof King, "(0, 4) should be a King");
         assertTrue(board.getBox(0,5).getPiece() instanceof Bishop, "(0, 5) should be a Bishop");
         assertTrue(board.getBox(0,6).getPiece() instanceof Knight, "(0, 6) should be a Knight");
         assertTrue(board.getBox(0,7).getPiece() instanceof Rook, "(0, 7) should be a Rook");
@@ -59,8 +66,8 @@ public class BoardTest {
         assertTrue(board.getBox(7, 0).getPiece() instanceof Rook, "(7, 0) should be a Rook");
         assertTrue(board.getBox(7, 1).getPiece() instanceof Knight, "(7, 1) should be a Knight");
         assertTrue(board.getBox(7,2).getPiece() instanceof Bishop, "(7, 2) should be a Bishop");
-        assertTrue(board.getBox(7,3).getPiece() instanceof King, "(7, 3) should be a King");
-        assertTrue(board.getBox(7,4).getPiece() instanceof Queen, "(7, 4) should be a Queen");
+        assertTrue(board.getBox(7,3).getPiece() instanceof Queen, "(7, 3) should be a Queen");
+        assertTrue(board.getBox(7,4).getPiece() instanceof King, "(7, 4) should be a King");
         assertTrue(board.getBox(7,5).getPiece() instanceof Bishop, "(7, 5) should be a Bishop");
         assertTrue(board.getBox(7,6).getPiece() instanceof Knight, "(7, 6) should be a Knight");
         assertTrue(board.getBox(7,7).getPiece() instanceof Rook, "(7, 7) should be a Rook");
@@ -70,5 +77,10 @@ public class BoardTest {
                 assertNull(board.getBox(r, c).getPiece(), "("+r+", "+c+") should not contain a piece");
             }
         }
+    }
+
+    @Test
+    void testExport(){
+        assertEquals("rnbqkbnrpppppppp                                PPPPPPPPRNBQKBNR", board.export(), "Should export standard setup");
     }
 }

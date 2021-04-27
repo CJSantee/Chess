@@ -1,12 +1,15 @@
 package chess.Pieces;
 
+import chess.Board;
+import chess.Spot;
+
 public class Bishop extends Piece {
     public Bishop(boolean white){
         super(white);
     }
 
     @Override
-    public boolean canMove(){
+    public boolean canMove(Board board, Spot start, Spot end){
         return true;
     }
 
@@ -23,6 +26,12 @@ public class Bishop extends Piece {
             default:
                 return "";
         }
+    }
+
+    @Override
+    public char printChar(){
+        if(isWhite()) return 'B';
+        else return 'b';
     }
 }
 

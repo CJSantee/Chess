@@ -1,5 +1,8 @@
 package chess.Pieces;
 
+import chess.Board;
+import chess.Spot;
+
 public class Rook extends Piece {
 
     public Rook(boolean white){
@@ -7,7 +10,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean canMove(){
+    public boolean canMove(Board board, Spot start, Spot end){
         // we can't move the piece to a spot that has a piece has
         // a piece of the same color
         return true;
@@ -26,5 +29,11 @@ public class Rook extends Piece {
             default:
                 return "";
         }
+    }
+
+    @Override
+    public char printChar(){
+        if(isWhite()) return 'R';
+        else return 'r';
     }
 }

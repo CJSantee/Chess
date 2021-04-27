@@ -41,6 +41,12 @@ public class Spot {
         return (x%2==y%2);
     }
 
-
+    public char printChar(){
+        if(hasPiece()){
+            return getPiece().printChar();
+        }else{
+            return ' ';
+        }
+    }
 
 }

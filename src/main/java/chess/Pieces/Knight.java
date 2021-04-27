@@ -1,12 +1,15 @@
 package chess.Pieces;
 
+import chess.Board;
+import chess.Spot;
+
 public class Knight extends Piece {
     public Knight(boolean white){
         super(white);
     }
 
     @Override 
-    public boolean canMove(){
+    public boolean canMove(Board board, Spot start, Spot end){
         return true;
     }
 
@@ -23,5 +26,11 @@ public class Knight extends Piece {
             default:
                 return "";
         }
+    }
+
+    @Override
+    public char printChar(){
+        if(isWhite()) return 'N';
+        else return 'n';
     }
 }

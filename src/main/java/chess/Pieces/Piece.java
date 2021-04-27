@@ -1,5 +1,8 @@
 package chess.Pieces;
 
+import chess.Board;
+import chess.Spot;
+
 public abstract class Piece {
     private boolean killed = false;
     private boolean white = false;
@@ -24,8 +27,10 @@ public abstract class Piece {
         this.killed = killed;
     }
 
-    public abstract boolean canMove();
+    public abstract boolean canMove(Board board, Spot start, Spot end);
 
     public abstract String printLine(int line);
+
+    public abstract char printChar();
 
 }
