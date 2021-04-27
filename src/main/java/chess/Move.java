@@ -23,5 +23,19 @@ public class Move {
     public void setCastlingMove(boolean castlingMove) {
         this.castlingMove = castlingMove;
     }
+
+    public Spot getStart(){
+        return this.start;
+    }
+    public Spot getEnd(){
+        return this.end;
+    }
+    
+    public Piece getPieceKilled(){
+        return this.pieceKilled;
+    }
+    public void setPieceKilled(Piece piece) {
+        this.pieceKilled = piece;
+    }
     
 }

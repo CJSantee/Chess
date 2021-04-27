@@ -125,7 +125,19 @@ public class Board {
         return boxes[x][y];
     }
 
-    // TODO: Add public Spot getBox(Piece piece) method
+    // Get location of a piece on the board
+    public Spot getBox(Piece piece) throws Exception{
+        for(int r = 0; r < 8; r++){
+            for(int c = 0; c < 8; c++){
+                if(boxes[r][c].hasPiece()){
+                    if(boxes[r][c].getPiece().equals(piece)){
+                        return boxes[r][c];
+                    }
+                }
+            }
+        }
+        throw new Exception("Piece not found");
+    }
 
     // Reset the board to standard starting position
     public void resetBoard(){

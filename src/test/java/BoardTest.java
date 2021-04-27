@@ -113,7 +113,13 @@ public class BoardTest {
             assertTrue(board.getBox(0, 0) instanceof Spot, "should return Spot object");
         }
 
-        // TODO: add tests for getBox(Piece piece)
+        @Test
+        void testGetBoxByPiece() throws Exception{
+            King whiteKing = (King) board.getBox(0, 4).getPiece();
+            King blackKing = (King) board.getBox(7, 4).getPiece();
+            assertEquals(board.getBox(0, 4), board.getBox(whiteKing), "Spot (0, 4) should be returned by searching the location of the whiteKing");
+            assertEquals(board.getBox(7, 4), board.getBox(blackKing), "Spot (7, 4) should be returned by searching the location of the blackKing");
+        }
 
         @Test
         void testFen(){
