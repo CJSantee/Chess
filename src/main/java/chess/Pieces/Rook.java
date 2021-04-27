@@ -4,9 +4,18 @@ import chess.Board;
 import chess.Spot;
 
 public class Rook extends Piece {
+    private boolean hasMoved = false;
 
     public Rook(boolean white){
         super(white);
+    }
+
+    public boolean hasMoved(){
+        return this.hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
     }
 
     @Override

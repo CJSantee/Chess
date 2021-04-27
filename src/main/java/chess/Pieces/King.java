@@ -4,18 +4,18 @@ import chess.Board;
 import chess.Spot;
 
 public class King extends Piece {
-    private boolean castlingDone = false;
+    private boolean canCastle = true;
 
     public King(boolean white){
         super(white);
     }
 
-    public boolean isCastlingDone() {
-        return this.castlingDone;
+    public boolean canCastle() {
+        return this.canCastle;
     }
 
-    public void setCastlingDone(boolean castlingDone) {
-        this.castlingDone = castlingDone;
+    public void setCanCastle(boolean canCastle) {
+        this.canCastle = canCastle;
     }
 
     @Override

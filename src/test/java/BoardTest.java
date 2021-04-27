@@ -113,6 +113,8 @@ public class BoardTest {
             assertTrue(board.getBox(0, 0) instanceof Spot, "should return Spot object");
         }
 
+        // TODO: add tests for getBox(Piece piece)
+
         @Test
         void testFen(){
             assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", board.fen(), "Should export standard setup in FEN");

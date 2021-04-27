@@ -9,7 +9,7 @@ import chess.Pieces.*;
 */
 public class Board {
     private Spot[][] boxes;
-    
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_WHITE = "\u001B[37m";
@@ -125,6 +125,8 @@ public class Board {
         return boxes[x][y];
     }
 
+    // TODO: Add public Spot getBox(Piece piece) method
+
     // Reset the board to standard starting position
     public void resetBoard(){
         // initialize white pieces
@@ -212,4 +214,6 @@ public class Board {
         }
         return ret;
     }
+
+    // TODO: Add clear() Method 
 }
