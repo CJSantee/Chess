@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import chess.Board;
 import chess.Spot;
@@ -22,15 +24,24 @@ public class BoardTest {
     
     private Board board;
 
-    @Test
-    void testBoardException() throws Exception{
-        Throwable exception = assertThrows(Exception.class, () -> { board = new Board(" "); });
-        assertEquals("Invalid input String", exception.getMessage());
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "",
+        "8/8",
+        "8/8/8/8/9/8/8/8",
+        "4P4/8/8/8/8/8/8/8",
+        "4T3/8/8/8/8/8/8/8",
+        "PPPPPPPPP/8/8/8/8/8/8/8",
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    })
+    void testBoardException(String input) throws Exception{
+        Throwable exception = assertThrows(Exception.class, () -> { board = new Board(input); },input+" Should throw an Exception" );
+        assertEquals("Invalid input String", exception.getMessage(), input+" Should respond with Invalid input msg");
     }
 
     @Test
     void testFENConstructor() throws Exception{
-        board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        board = new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         testStandardSetup();
     }
 
@@ -42,12 +53,11 @@ public class BoardTest {
 
     @Test
     void testResetBoard() throws Exception{
-        board = new Board("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1");
+        board = new Board("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR");
         board.resetBoard();
         testStandardSetup();
     }
 
-    @Test
     void testStandardSetup() throws Exception{
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
@@ -105,11 +115,9 @@ public class BoardTest {
 
         @Test
         void testFen(){
-            assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", board.fen(), "Should export standard setup in FEN");
+            assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", board.fen(), "Should export standard setup in FEN");
         }
 
     }
-
-    
 
 }

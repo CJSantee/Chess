@@ -4,8 +4,8 @@ import chess.Pieces.*;
 /*
     Board Class:
     0, 0 is a1
-    "rnbqkbnrpppppppp                                PPPPPPPPRNBQKBNR"
-    is standard setup, a8 -> h1
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    is standard setup, a8 -> h1, in FEN
 */
 public class Board {
     private Spot[][] boxes;
@@ -25,58 +25,96 @@ public class Board {
     }
 
     public Board(String input) throws Exception{
-        if(input.length() != 64){
+        boxes = new Spot[8][8];
+        String[] rows = input.split("/");
+        if(rows.length != 8){
+            System.err.println("Invalid num ranks: expected 8");
             throw new Exception("Invalid input String");
         }
-        boxes = new Spot[8][8];
-        char[] arrOfString = input.toCharArray();
-        int n = 0;
+        int i, c;
+        char[] row;
+        i = 0;
         for(int r = 7; r >= 0; r--){
-            for(int c = 0; c < 8; c++){
-                switch (arrOfString[n]) {
-                    case 'R':
+            c = 0;
+            row = rows[i].toCharArray();
+            if(row.length > 8){
+                System.err.println("Invalid num elements in rank: expected <= 8");
+                throw new Exception("Invalid input String");
+            }
+            for (char ch : row){
+                switch (ch) {
+                    case 'R': 
                         boxes[r][c] = new Spot(r, c, new Rook(true));
+                        c++;
                         break;
-                    case 'r':
+                    case 'r': 
                         boxes[r][c] = new Spot(r, c, new Rook(false));
+                        c++;
                         break;
-                    case 'N':
+                    case 'N': 
                         boxes[r][c] = new Spot(r, c, new Knight(true));
+                        c++;
                         break;
-                    case 'n':
+                    case 'n': 
                         boxes[r][c] = new Spot(r, c, new Knight(false));
+                        c++;
                         break;
-                    case 'B':
+                    case 'B': 
                         boxes[r][c] = new Spot(r, c, new Bishop(true));
+                        c++;
                         break;
-                    case 'b':
+                    case 'b': 
                         boxes[r][c] = new Spot(r, c, new Bishop(false));
+                        c++;
                         break;
-                    case 'K':
-                        boxes[r][c] = new Spot(r, c, new King(true));
+                    case 'Q': 
+                        boxes[r][c]  = new Spot(r, c, new Queen(true));
+                        c++;
                         break;
-                    case 'k':
-                        boxes[r][c] = new Spot(r, c, new King(false));
-                        break;
-                    case 'Q':
-                        boxes[r][c] = new Spot(r, c, new Queen(true));
-                        break;
-                    case 'q':
+                    case 'q': 
                         boxes[r][c] = new Spot(r, c, new Queen(false));
+                        c++;
                         break;
-                    case 'P':
+                    case 'K': 
+                        boxes[r][c] = new Spot(r, c, new King(true));
+                        c++;
+                        break;
+                    case 'k': 
+                        boxes[r][c] = new Spot(r, c, new King(false));
+                        c++;
+                        break;
+                    case 'P': 
                         boxes[r][c] = new Spot(r, c, new Pawn(true));
+                        c++;
                         break;
-                    case 'p':
+                    case 'p': 
                         boxes[r][c] = new Spot(r, c, new Pawn(false));
+                        c++;
                         break;
                     default:
-                        boxes[r][c] = new Spot(r, c, null);
-                        break;
+                        if(ch == '1' || ch == '2' || ch == '3' || ch == '4'|| ch == '5' || ch == '6' || ch == '7' || ch == '8'){
+                            int num = Character.getNumericValue(ch);
+                            if(c+num > 8){
+                                System.err.println("Invalid num empty squares");
+                                throw new Exception("Invalid input String");
+                            }
+                            for(int j = 0; j < num; j++){
+                                boxes[r][c+j] = new Spot(r, c+j, null);
+                            }
+                            c+=num;
+                            break;
+                        }
+                        System.err.println("Invalid input field: expected <RrNnBbQqKkPp12345678>");
+                        throw new Exception("Invalid input String");
                 }
-                n++;
+                if(c > 8){
+                    System.err.println("Invalid num elements on rank");
+                    throw new Exception("Invalid input String");
+                }
             }
+            i++;
         }
+
     }
 
     public Spot getBox(int x, int y) throws Exception{
@@ -147,12 +185,26 @@ public class Board {
         }
     }
 
-    public String export(){
+    public String fen(){
         String ret = "";
+        int numEmpty;
         for(int r = 7; r >= 0; r--){
+            numEmpty = 0;
             for(int c = 0; c < 8; c++){
-                ret += boxes[r][c].printChar();
+                if(boxes[r][c].hasPiece()){
+                    if(numEmpty != 0){
+                        ret += Character.forDigit(numEmpty, 10);
+                    }
+                    ret += boxes[r][c].printChar();
+                    numEmpty = 0;
+                }else{
+                    numEmpty++;
+                }
             }
+            if(numEmpty != 0){
+                ret += Character.forDigit(numEmpty, 10);
+            }
+            if(r != 0) ret+='/';
         }
         return ret;
     }
