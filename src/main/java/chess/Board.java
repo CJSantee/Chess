@@ -9,9 +9,7 @@ import chess.Pieces.*;
 */
 public class Board {
     private Spot[][] boxes;
-
-    public static final String BLACK_BOLD_BRIGHT = "\033[1;90m"; // BLACK
-
+    
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_WHITE = "\u001B[37m";
@@ -19,11 +17,13 @@ public class Board {
     public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
+    // Default board constructor
     public Board(){
         boxes = new Spot[8][8];
         this.resetBoard();
     }
 
+    // Setup new board from FEN position
     public Board(String input) throws Exception{
         boxes = new Spot[8][8];
         String[] rows = input.split("/");
@@ -117,6 +117,7 @@ public class Board {
 
     }
 
+    // Get spot on the board
     public Spot getBox(int x, int y) throws Exception{
         if(x < 0 || x > 7 || y < 0 || y > 7){
             throw new Exception("Index out of bound");
@@ -124,6 +125,7 @@ public class Board {
         return boxes[x][y];
     }
 
+    // Reset the board to standard starting position
     public void resetBoard(){
         // initialize white pieces
         boxes[0][0] = new Spot(0, 0, new Rook(true));   // Rook
@@ -159,6 +161,7 @@ public class Board {
         }
     }
 
+    // Print the board to the console
     public void print(){
         String blankLine = "               ";
         for(int r = 0; r < 8; r++){
@@ -185,6 +188,7 @@ public class Board {
         }
     }
 
+    // Export the board position in FEN
     public String fen(){
         String ret = "";
         int numEmpty;
