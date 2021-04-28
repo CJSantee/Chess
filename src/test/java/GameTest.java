@@ -1,28 +1,24 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import chess.Game;
 import chess.Move;
 import chess.Spot;
-import chess.Player.HumanPlayer;
 
 public class GameTest {
     
     private Game game;
-    private HumanPlayer p1, p2;
 
     @BeforeEach
     void setUp(){
-        HumanPlayer p1 = new HumanPlayer(true);
-        HumanPlayer p2 = new HumanPlayer(false);
-        game = new Game(p1, p2);
+        game = new Game();
     }
 
     @ParameterizedTest
@@ -121,6 +117,69 @@ public class GameTest {
     })
     void testBlackFindPawnSrcRank(String dest, char src) throws Exception{
         assertEquals(src, game.findPawnSrcRank(dest,false), dest+" should return "+src+" for standard setup");
+    }
+
+    @Nested
+    @DisplayName("Test Pawn Moves")
+    class testPawnMoves{
+
+        @BeforeEach
+        void setUp() throws Exception{
+            game = new Game("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1");
+        }
+
+        @Test
+        void testPawnCapture() throws Exception{
+            Move move = game.sanToMove("exd5");
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(3, start.getX(), "Start x should equal: "+3);
+            assertEquals(4, start.getY(), "Start y should equal: "+4);
+            assertEquals(4, end.getX(), "End x should equal: "+4);
+            assertEquals(3, end.getY(), "End y should equal: "+3);
+        }
+    }
+
+    @Nested
+    @DisplayName("Test Rook Moves")
+    class testRookMoves{
+
+        @BeforeEach
+        void setUp() throws Exception{
+            game = new Game("7r/8/8/8/8/8/8/b6R w KQkq - 0 1");
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "Rb1, 0, 7, 0, 1",
+            "Rh4, 0, 7, 3, 7",
+            "Rh7, 0, 7, 6, 7"
+        })
+        void testRookMove(String san, int startX, int startY, int endX, int endY) throws Exception{
+            Move move = game.sanToMove(san);
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(startX, start.getX(), "Start x should equal: "+startX+" for "+san);
+            assertEquals(startY, start.getY(), "Start y should equal: "+startY+" for "+san);
+            assertEquals(endX, end.getX(), "End x should equal: "+endX+" for "+san);
+            assertEquals(endY, end.getY(), "End y should equal: "+endY+" for "+san);
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "Rxh8, 0, 7, 7, 7",
+            "Rxa1, 0, 7, 0, 0"
+        })
+        void testRookCapture(String san, int startX, int startY, int endX, int endY) throws Exception{
+            Move move = game.sanToMove(san);
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(startX, start.getX(), "Start x should equal: "+startX+" for "+san);
+            assertEquals(startY, start.getY(), "Start y should equal: "+startY+" for "+san);
+            assertEquals(endX, end.getX(), "End x should equal: "+endX+" for "+san);
+            assertEquals(endY, end.getY(), "End y should equal: "+endY+" for "+san);
+        }
+
     }
 
 }

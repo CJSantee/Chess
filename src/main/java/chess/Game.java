@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.Pieces.Piece;
+import chess.Pieces.Rook;
+import chess.Player.ComputerPlayer;
+import chess.Player.HumanPlayer;
 import chess.Player.Player;
 
 public class Game {
@@ -13,6 +16,21 @@ public class Game {
     private GameStatus status;
     private List<Move> movesPlayed;
 
+    // Default game constructor
+    public Game(){
+        players = new Player[2];
+        players[0] = new HumanPlayer(true);
+        players[1] = new ComputerPlayer(false);
+        currentTurn = players[0];
+
+        board = new Board();
+
+        movesPlayed = new ArrayList<Move>();
+
+        status = GameStatus.ACTIVE;
+    }
+
+    // Game constructor given players
     public Game(Player p1, Player p2){
         players = new Player[2];
         players[0] = p1;
@@ -27,7 +45,31 @@ public class Game {
         board = new Board();
 
         movesPlayed = new ArrayList<Move>();
-        movesPlayed.clear();
+
+        status = GameStatus.ACTIVE;
+    }
+
+    // Game constructor with Forsyth-Edwards Notation
+    public Game(String FEN) throws Exception{
+        String[] fenArr = FEN.split(" ");
+        if(fenArr.length != 6){
+            throw new Exception("Invalid FEN input");
+        }
+        String position = fenArr[0];
+        char activeColor = fenArr[1].charAt(0);
+        String castling = fenArr[2];
+        String enPassant = fenArr[3];
+        int halfmoveClock = Integer.parseInt(fenArr[4]);
+        int fullmoveClock = Integer.parseInt(fenArr[5]);
+
+        players = new Player[2];
+        players[0] = new HumanPlayer(true);
+        players[1] = new ComputerPlayer(false);
+        currentTurn = activeColor == 'w' ? players[0] : players[1];
+
+        board = new Board(position);
+
+        movesPlayed = new ArrayList<Move>();
 
         status = GameStatus.ACTIVE;
     }
@@ -62,40 +104,28 @@ public class Game {
         Spot start, end;
         String src = "";
         String dest = "";
-        // Queenside Castle
-        if(SAN == "0-0-0"){
-            if(currentTurn.isWhiteSide()){
-                start = board.getBox(0, 4);
-                end = board.getBox(0, 2);
-            }else{
-                start = board.getBox(7, 4);
-                end = board.getBox(7, 2);
-            }
-        }else if(SAN == "0-0"){
-            // Kingside castle
-            if(currentTurn.isWhiteSide()){
-                start = board.getBox(0, 4);
-                end = board.getBox(0, 6);
-            }else{
-                start = board.getBox(7, 4);
-                end = board.getBox(7, 6);
-            }
-        }
         char[] a = SAN.toCharArray();
         // Pawn Move
         if(a[0]=='a'||a[0]=='b'||a[0]=='c'||a[0]=='d'||a[0]=='e'||a[0]=='f'||a[0]=='g'||a[0]=='h'){
             src += a[0];
             // Pawn capture
             if(a[1]=='x'){
-                dest += a[2] + a[3];
-                src += (Character.getNumericValue(a[3])-2);
-                System.out.println(src+" "+dest);
+                dest = a[2] +""+ a[3];
+                src += (Character.getNumericValue(a[3])-1);
             }else{
-                dest += a[0];
-                dest += (Character.getNumericValue(a[1]));
+                dest = a[0] +""+ a[1];
                 src += findPawnSrcRank(dest, currentTurn.whiteSide);
-                System.out.println(src+" "+dest);
             }
+        }
+        // Rook Move
+        if(a[0]=='R'){
+            // Rook Capture
+            if(a[1] == 'x'){
+                dest = a[2] +""+ a[3];
+            }else{
+                dest = a[1] +""+ a[2];
+            }
+            src = findRookSrc(dest);
         }
         start = sanToSpot(src);
         end = sanToSpot(dest);
@@ -119,6 +149,45 @@ public class Game {
         }else{
             throw new Exception("Source Pawn not found");
         }
+    }
+
+    public String findRookSrc(String dest) throws Exception{
+        Spot destSpot = sanToSpot(dest);
+        int x = destSpot.getX();
+        int y = destSpot.getY();
+        for(int left = destSpot.getY()-1; left >= 0; left--){
+            if(board.getBox(x, left).hasPiece()){
+                if(board.getBox(x, left).getPiece() instanceof Rook && board.getBox(x, left).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(x, left).san();
+                }
+                break;
+            }
+        }
+        for(int right = destSpot.getY()+1; right < 8; right++){
+            if(board.getBox(x, right).hasPiece()){
+                if(board.getBox(x, right).getPiece() instanceof Rook && board.getBox(x, right).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(x, right).san();
+                }
+                break;
+            }
+        }
+        for(int up = destSpot.getX()+1; up < 8; up++){
+            if(board.getBox(up, y).hasPiece()){
+                if(board.getBox(up, y).getPiece() instanceof Rook && board.getBox(up, y).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(up, y).san();
+                }
+                break;
+            }
+        }
+        for(int down = destSpot.getX()-1; down >= 0; down--){
+            if(board.getBox(down, y).hasPiece()){
+                if(board.getBox(down, y).getPiece() instanceof Rook && board.getBox(down, y).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(down, y).san();
+                }
+                break;
+            }
+        }
+        throw new Exception("Rook Not Found");
     }
 
     public Spot sanToSpot(String SAN){

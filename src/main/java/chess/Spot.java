@@ -49,4 +49,38 @@ public class Spot {
         }
     }
 
+    public String san(){
+        String ret;
+        switch (this.getY()) {
+            case 0: 
+                ret = "a";
+                break;
+            case 1:
+                ret = "b";
+                break;
+            case 2:
+                ret = "c";
+                break;
+            case 3:
+                ret = "d";
+                break;
+            case 4:
+                ret = "e";
+                break;
+            case 5:
+                ret = "f";
+                break;
+            case 6:
+                ret = "g";
+                break;
+            case 7:
+                ret = "h";
+                break;
+            default:
+                return "";
+        }
+        ret += getX()+1;
+        return ret;
+    }
+
 }
