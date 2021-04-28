@@ -15,6 +15,8 @@ public class Board {
     public static final String ANSI_WHITE = "\u001B[37m";
 
     public static final String ANSI_BLACK_BACKGROUND = "\u001B[40m";
+    public static final String CUSTOM_BLACK_BACKGROUND  = "\u001b[48;5;238m";
+    public static final String CUSTOM_WHITE_BACKGROUND  = "\u001b[48;5;246m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
     // Default board constructor
@@ -178,24 +180,24 @@ public class Board {
     // Print the board to the console
     public void print(){
         String blankLine = "               ";
-        for(int r = 0; r < 8; r++){
+        for(int r = 7; r >= 0; r--){
             for(int i = 0; i < 7; i++){
                 for(int c = 0; c < 8; c++){
                     if(boxes[r][c].isWhite()){
-                        System.out.print(ANSI_WHITE_BACKGROUND);
-                        if(boxes[r][c].hasPiece()){
-                            System.out.print(ANSI_BLACK+boxes[r][c].getPiece().printLine(i));
-                        }else{
-                            System.out.print(blankLine);
-                        }
+                        System.out.print(CUSTOM_WHITE_BACKGROUND);
                     }else{
-                        System.out.print(ANSI_BLACK_BACKGROUND);
-                        if(boxes[r][c].hasPiece()){
-                            System.out.print(ANSI_WHITE+boxes[r][c].getPiece().printLine(i));
+                        System.out.print(CUSTOM_BLACK_BACKGROUND);
+                    }
+                    if(boxes[r][c].hasPiece()){
+                        if(boxes[r][c].getPiece().isWhite()){
+                            System.out.print(ANSI_WHITE);
                         }else{
-                            System.out.print(blankLine);
+                            System.out.print(ANSI_BLACK);
                         }
-                    } 
+                        System.out.print(boxes[r][c].getPiece().printLine(i));
+                    }else{
+                        System.out.print(blankLine);
+                    }
                 }
                 System.out.println(ANSI_RESET);
             }
