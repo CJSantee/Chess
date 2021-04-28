@@ -38,7 +38,7 @@ public class Spot {
     }
 
     public boolean isWhite(){
-        return (x%2==y%2);
+        return (x%2!=y%2);
     }
 
     public char printChar(){

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -25,7 +26,7 @@ public class GameTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
+    @CsvSource({
         "a3, 1, 0, 2, 0", 
         "b3, 1, 1, 2, 1",
         "c3, 1, 2, 2, 2",
@@ -69,24 +70,7 @@ public class GameTest {
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "a1, 0, 0",
-        "a2, 0, 1",
-        "a3, 0, 2",
-        "a4, 0, 3",
-        "a5, 0, 4",
-        "a6, 0, 5",
-        "a7, 0, 6",
-        "a8, 0, 7",
-        "b1, 1, 0",
-        "b2, 1, 1",
-        "c3, 2, 2",
-        "d4, 3, 3",
-        "e5, 4, 4",
-        "f6, 5, 5",
-        "g7, 6, 6",
-        "h8, 7, 7",
-    })
+    @CsvFileSource(resources = "/sanCords.csv", numLinesToSkip = 1)
     void testSANtoSpot(String SAN, int x, int y){
         Spot spot = game.sanToSpot(SAN);
         assertEquals(x, spot.getX(), SAN+" should be at X="+x);
