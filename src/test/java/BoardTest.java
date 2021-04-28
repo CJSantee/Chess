@@ -1,4 +1,5 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import chess.Board;
@@ -102,6 +104,84 @@ public class BoardTest {
         @BeforeEach
         void setUp(){
             board = new Board();
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "0, 0",
+            "0, 1",
+            "0, 2",
+            "0, 3",
+            "0, 4",
+            "0, 5",
+            "0, 6",
+            "0, 7",
+            "1, 0",
+            "1, 1",
+            "1, 2",
+            "1, 3",
+            "1, 4",
+            "1, 5",
+            "1, 6",
+            "1, 7",
+            "6, 0",
+            "6, 1",
+            "6, 2",
+            "6, 3",
+            "6, 4",
+            "6, 5",
+            "6, 6",
+            "6, 7",
+            "7, 0",
+            "7, 1",
+            "7, 2",
+            "7, 3",
+            "7, 4",
+            "7, 5",
+            "7, 6",
+            "7, 7",
+        })
+        void testHasPiece(int x, int y) throws Exception{
+            assertTrue(board.getBox(x, y).hasPiece());
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "2, 0",
+            "2, 1",
+            "2, 2",
+            "2, 3",
+            "2, 4",
+            "2, 5",
+            "2, 6",
+            "2, 7",
+            "3, 0",
+            "3, 1",
+            "3, 2",
+            "3, 3",
+            "3, 4",
+            "3, 5",
+            "3, 6",
+            "3, 7",
+            "4, 0",
+            "4, 1",
+            "4, 2",
+            "4, 3",
+            "4, 4",
+            "4, 5",
+            "4, 6",
+            "4, 7",
+            "5, 0",
+            "5, 1",
+            "5, 2",
+            "5, 3",
+            "5, 4",
+            "5, 5",
+            "5, 6",
+            "5, 7",
+        })
+        void testHasPieceFalse(int x, int y) throws Exception{
+            assertFalse(board.getBox(x, y).hasPiece());
         }
 
         @Test

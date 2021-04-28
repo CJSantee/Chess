@@ -36,6 +36,7 @@ public class Move {
     }
     public void setPieceKilled(Piece piece) {
         this.pieceKilled = piece;
+        pieceKilled.setKilled(true);
     }
     
 }
