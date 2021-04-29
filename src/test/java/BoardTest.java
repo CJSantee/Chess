@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import chess.Board;
+import chess.Move;
 import chess.Spot;
 import chess.Pieces.Bishop;
 import chess.Pieces.King;
@@ -21,6 +22,7 @@ import chess.Pieces.Knight;
 import chess.Pieces.Pawn;
 import chess.Pieces.Queen;
 import chess.Pieces.Rook;
+import chess.Player.HumanPlayer;
 
 public class BoardTest {
     
@@ -191,6 +193,15 @@ public class BoardTest {
             assertThrows(Exception.class, () -> board.getBox(4, 8), "y value out of bound should throw exception");
             assertEquals("Index out of bound", exception.getMessage(), "should display \"Index out of bound\" message");
             assertTrue(board.getBox(0, 0) instanceof Spot, "should return Spot object");
+        }
+
+        @Test
+        void testUpdate() throws Exception{
+            HumanPlayer p = new HumanPlayer(true);
+            Move move = new Move(p, board.getBox(1, 4), board.getBox(3, 4));
+            board.update(move);
+            assertTrue(board.getBox(3, 4).hasPiece(), "e4 should have a piece");
+            assertFalse(board.getBox(1, 4).hasPiece(), "e2 should not have a piece");
         }
 
         @Test

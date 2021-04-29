@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.imageio.spi.ImageWriterSpi;
+
 import chess.Pieces.Bishop;
 import chess.Pieces.King;
 import chess.Pieces.Knight;
+import chess.Pieces.Pawn;
 import chess.Pieces.Piece;
 import chess.Pieces.Queen;
 import chess.Pieces.Rook;
@@ -144,18 +147,19 @@ public class Game {
         String dest = "";
         char[] a = SAN.toCharArray();
 
+        int mod = whiteMove ? 1 : -1;
         // TODO: Check for capture before Piece
 
         // Pawn Move
         if(a[0]=='a'||a[0]=='b'||a[0]=='c'||a[0]=='d'||a[0]=='e'||a[0]=='f'||a[0]=='g'||a[0]=='h'){
-            src += a[0];
             // Pawn capture
             if(a[1]=='x'){
                 dest = a[2] +""+ a[3];
-                src += (Character.getNumericValue(a[3])-1);
+                src += a[0];
+                src += (Character.getNumericValue(a[3])-mod);
             }else{
                 dest = a[0] +""+ a[1];
-                src += findPawnSrcRank(dest, whiteMove);
+                src += findPawnSrc(dest);
             }
         }
         // Rook Move
@@ -215,6 +219,21 @@ public class Game {
         end = sanToSpot(dest);
         Move move = new Move(this.getCurrentTurn(), start, end);
         return move;
+    }
+
+    public String findPawnSrc(String dest) throws Exception{
+        Spot destSpot = sanToSpot(dest);
+        int x = destSpot.getX();
+        int y = destSpot.getY();
+        int mod = whiteMove ? 1 : -1;
+        for(int i = 1; i <= 2; i++){
+            if(board.getBox(x-(i*mod), y).hasPiece()){
+                if(board.getBox(x-(i*mod), y).getPiece() instanceof Pawn && board.getBox(x-(i*mod), y).getPiece().isWhite() == whiteMove){
+                    return board.getBox(x-(i*mod), y).san();
+                }
+            }
+        }
+        throw new Exception("Source Pawn not found");
     }
 
     public char findPawnSrcRank(String dest, boolean isWhite) throws Exception{
@@ -471,11 +490,11 @@ public class Game {
         throw new Exception("King not found");
     }
 
-    public Spot sanToSpot(String SAN){
+    public Spot sanToSpot(String SAN) throws Exception{
         Spot spot;
         int x = Character.getNumericValue(SAN.charAt(1)-1);
         int y = (int) SAN.charAt(0)-97;
-        spot = new Spot(x, y, null);
+        spot = board.getBox(x, y);
         return spot;
     }
 

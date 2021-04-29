@@ -67,7 +67,7 @@ public class GameTest {
 
     @ParameterizedTest
     @CsvFileSource(resources = "/sanCords.csv", numLinesToSkip = 1)
-    void testSANtoSpot(String SAN, int x, int y){
+    void testSANtoSpot(String SAN, int x, int y) throws Exception{
         Spot spot = game.sanToSpot(SAN);
         assertEquals(x, spot.getX(), SAN+" should be at X="+x);
         assertEquals(y, spot.getY(), SAN+" should be at Y="+y);
