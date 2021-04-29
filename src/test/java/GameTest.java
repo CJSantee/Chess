@@ -42,7 +42,7 @@ public class GameTest {
         "Na3, 0, 1, 2, 0",
         "Nc3, 0, 1, 2, 2",
         "Nf3, 0, 6, 2, 5",
-        "Ng3, 0, 6, 2, 7",
+        "Nh3, 0, 6, 2, 7",
     })
     void testSANtoMove(String SAN, int startX, int startY, int endX, int endY) throws Exception{
         Move move = game.sanToMove(SAN);
@@ -204,7 +204,6 @@ public class GameTest {
             "Nh3, 0, 6, 2, 7"
         })
         void testKnightMove(String san, int startX, int startY, int endX, int endY) throws Exception{
-            System.out.println(san);
             Move move = game.sanToMove(san);
             Spot start = move.getStart();
             Spot end = move.getEnd();
@@ -220,6 +219,51 @@ public class GameTest {
             "Nxd4, 5, 4, 3, 3"
         })
         void testKnightCapture(String san, int startX, int startY, int endX, int endY) throws Exception{
+            Move move = game.sanToMove(san);
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(startX, start.getX(), "Start x should equal: "+startX+" for "+san);
+            assertEquals(startY, start.getY(), "Start y should equal: "+startY+" for "+san);
+            assertEquals(endX, end.getX(), "End x should equal: "+endX+" for "+san);
+            assertEquals(endY, end.getY(), "End y should equal: "+endY+" for "+san);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("Test Bishop Moves")
+    class testBishopMoves{
+        
+        @BeforeEach
+        void setUp() throws Exception{
+            game = new Game("r7/7b/8/8/4B3/8/6p1/1n6 w KQkq - 0 1");
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "Bb7, 3, 4, 6, 1",
+            "Bg6, 3, 4, 5, 6",
+            "Bf3, 3, 4, 2, 5",
+            "Bc2, 3, 4, 1, 2"
+        })
+        void testBishopMove(String san, int startX, int startY, int endX, int endY) throws Exception{
+            Move move = game.sanToMove(san);
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(startX, start.getX(), "Start x should equal: "+startX+" for "+san);
+            assertEquals(startY, start.getY(), "Start y should equal: "+startY+" for "+san);
+            assertEquals(endX, end.getX(), "End x should equal: "+endX+" for "+san);
+            assertEquals(endY, end.getY(), "End y should equal: "+endY+" for "+san);
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "Bxa8, 3, 4, 7, 0",
+            "Bxh7, 3, 4, 6, 7",
+            "Bxg2, 3, 4, 1, 6",
+            "Bxb1, 3, 4, 0, 1"
+        })
+        void testBishopCapture(String san, int startX, int startY, int endX, int endY) throws Exception{
             Move move = game.sanToMove(san);
             Spot start = move.getStart();
             Spot end = move.getEnd();

@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.List;
 
+import chess.Pieces.Bishop;
 import chess.Pieces.Knight;
 import chess.Pieces.Piece;
 import chess.Pieces.Rook;
@@ -138,6 +139,16 @@ public class Game {
             }
             src = findKnightSrc(dest);
         }
+        // Bishop Move
+        if(a[0]=='B'){
+            // Bishop Capture
+            if(a[1] == 'x'){
+                dest = a[2] +""+ a[3];
+            }else{
+                dest = a[1] +""+ a[2];
+            }
+            src = findBishopSrc(dest);
+        }
 
         start = sanToSpot(src);
         end = sanToSpot(dest);
@@ -167,7 +178,7 @@ public class Game {
         Spot destSpot = sanToSpot(dest);
         int x = destSpot.getX();
         int y = destSpot.getY();
-        for(int left = destSpot.getY()-1; left >= 0; left--){
+        for(int left = y-1; left >= 0; left--){
             if(board.getBox(x, left).hasPiece()){
                 if(board.getBox(x, left).getPiece() instanceof Rook && board.getBox(x, left).getPiece().isWhite() == currentTurn.whiteSide){
                     return board.getBox(x, left).san();
@@ -175,7 +186,7 @@ public class Game {
                 break;
             }
         }
-        for(int right = destSpot.getY()+1; right < 8; right++){
+        for(int right = y+1; right < 8; right++){
             if(board.getBox(x, right).hasPiece()){
                 if(board.getBox(x, right).getPiece() instanceof Rook && board.getBox(x, right).getPiece().isWhite() == currentTurn.whiteSide){
                     return board.getBox(x, right).san();
@@ -183,7 +194,7 @@ public class Game {
                 break;
             }
         }
-        for(int up = destSpot.getX()+1; up < 8; up++){
+        for(int up = x+1; up < 8; up++){
             if(board.getBox(up, y).hasPiece()){
                 if(board.getBox(up, y).getPiece() instanceof Rook && board.getBox(up, y).getPiece().isWhite() == currentTurn.whiteSide){
                     return board.getBox(up, y).san();
@@ -191,7 +202,7 @@ public class Game {
                 break;
             }
         }
-        for(int down = destSpot.getX()-1; down >= 0; down--){
+        for(int down = x-1; down >= 0; down--){
             if(board.getBox(down, y).hasPiece()){
                 if(board.getBox(down, y).getPiece() instanceof Rook && board.getBox(down, y).getPiece().isWhite() == currentTurn.whiteSide){
                     return board.getBox(down, y).san();
@@ -212,9 +223,7 @@ public class Game {
             if(inBounds(x+testX[i])&&inBounds(y+testY[i])){
                 if(board.getBox(x+testX[i], y+testY[i]).hasPiece()){
                     if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof Knight && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == currentTurn.whiteSide){
-                        String ret = board.getBox(x+testX[i], y+testY[i]).san();
-                        System.out.println(ret);
-                        return ret;
+                        return board.getBox(x+testX[i], y+testY[i]).san();
                     }
                 }
             }
@@ -225,6 +234,65 @@ public class Game {
     public boolean inBounds(int n){
         if(n >= 0 && n < 8) return true;
         return false;
+    }
+
+    public String findBishopSrc(String dest) throws Exception{
+        Spot destSpot = sanToSpot(dest);
+        int x = destSpot.getX();
+        int y = destSpot.getY();
+        // Southeast
+        int seX = x-1;
+        int seY = y+1;
+        while(inBounds(seX) && inBounds(seY)){
+            if(board.getBox(seX, seY).hasPiece()){
+                if(board.getBox(seX, seY).getPiece() instanceof Bishop && board.getBox(seX, seY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(seX, seY).san();
+                }
+                break;
+            }
+            seX-=1;
+            seY+=1;
+        }
+        // Southwest
+        int swX = x-1;
+        int swY = y-1;
+        while(inBounds(swX) && inBounds(swY)){
+            if(board.getBox(swX, swY).hasPiece()){
+                if(board.getBox(swX, swY).getPiece() instanceof Bishop && board.getBox(swX, swY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(swX, swY).san();
+                }
+                break;
+            }
+            swX-=1;
+            swY-=1;
+        }
+        // Northwest
+        int nwX = x+1;
+        int nwY = y-1;
+        while(inBounds(nwX) && inBounds(nwY)){
+            if(board.getBox(nwX, nwY).hasPiece()){
+                if(board.getBox(nwX, nwY).getPiece() instanceof Bishop && board.getBox(nwX, nwY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(nwX, nwY).san();
+                }
+                break;
+            }
+            nwX+=1;
+            nwY-=1;
+        }
+        // Northeast
+        int neX = x+1;
+        int neY = y+1;
+        while(inBounds(neX) && inBounds(neY)){
+            if(board.getBox(neX, neY).hasPiece()){
+                if(board.getBox(neX, neY).getPiece() instanceof Bishop && board.getBox(neX, neY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(neX, neY).san();
+                }
+                break;
+            }
+            neX+=1;
+            neY+=1;
+        }
+        throw new Exception("Bishop not found");
     }
 
     public Spot sanToSpot(String SAN){
