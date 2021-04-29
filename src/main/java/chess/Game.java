@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import chess.Pieces.Bishop;
+import chess.Pieces.King;
 import chess.Pieces.Knight;
 import chess.Pieces.Piece;
+import chess.Pieces.Queen;
 import chess.Pieces.Rook;
 import chess.Player.ComputerPlayer;
 import chess.Player.HumanPlayer;
@@ -107,6 +109,9 @@ public class Game {
         String src = "";
         String dest = "";
         char[] a = SAN.toCharArray();
+
+        // TODO: Check for capture before Piece
+
         // Pawn Move
         if(a[0]=='a'||a[0]=='b'||a[0]=='c'||a[0]=='d'||a[0]=='e'||a[0]=='f'||a[0]=='g'||a[0]=='h'){
             src += a[0];
@@ -149,6 +154,28 @@ public class Game {
             }
             src = findBishopSrc(dest);
         }
+        // Queen Move
+        if(a[0]=='Q'){
+            // Queen Capture
+            if(a[1] == 'x'){
+                dest = a[2] +""+ a[3];
+            }else{
+                dest = a[1] +""+ a[2];
+            }
+            src = findQueenSrc(dest);
+        }
+        // King Move 
+        if(a[0]=='K'){
+            // King Capture
+            if(a[1] == 'x'){
+                dest = a[2] +""+ a[3];
+            }else{
+                dest = a[1] +""+ a[2];
+            }
+            src = findKingSrc(dest);
+        }
+
+        // Add error handling
 
         start = sanToSpot(src);
         end = sanToSpot(dest);
@@ -293,6 +320,121 @@ public class Game {
             neY+=1;
         }
         throw new Exception("Bishop not found");
+    }
+
+    // TODO: Generalize findRookSrc, findBishopSrc, and findQueenSrc to findOnHorizontal and findOnVertical or similar
+    public String findQueenSrc(String dest) throws Exception{
+        Spot destSpot = sanToSpot(dest);
+        int x = destSpot.getX();
+        int y = destSpot.getY();
+        // Left
+        for(int left = y-1; left >= 0; left--){
+            if(board.getBox(x, left).hasPiece()){
+                if(board.getBox(x, left).getPiece() instanceof Queen && board.getBox(x, left).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(x, left).san();
+                }
+                break;
+            }
+        } 
+        // Right
+        for(int right = y+1; right < 8; right++){
+            if(board.getBox(x, right).hasPiece()){
+                if(board.getBox(x, right).getPiece() instanceof Queen && board.getBox(x, right).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(x, right).san();
+                }
+                break;
+            }
+        }
+        // Up
+        for(int up = x+1; up < 8; up++){
+            if(board.getBox(up, y).hasPiece()){
+                if(board.getBox(up, y).getPiece() instanceof Queen && board.getBox(up, y).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(up, y).san();
+                }
+                break;
+            }
+        }
+        // Down
+        for(int down = x-1; down >= 0; down--){
+            if(board.getBox(down, y).hasPiece()){
+                if(board.getBox(down, y).getPiece() instanceof Queen && board.getBox(down, y).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(down, y).san();
+                }
+                break;
+            }
+        }
+        // Southeast
+        int seX = x-1;
+        int seY = y+1;
+        while(inBounds(seX) && inBounds(seY)){
+            if(board.getBox(seX, seY).hasPiece()){
+                if(board.getBox(seX, seY).getPiece() instanceof Queen && board.getBox(seX, seY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(seX, seY).san();
+                }
+                break;
+            }
+            seX-=1;
+            seY+=1;
+        }
+        // Southwest
+        int swX = x-1;
+        int swY = y-1;
+        while(inBounds(swX) && inBounds(swY)){
+            if(board.getBox(swX, swY).hasPiece()){
+                if(board.getBox(swX, swY).getPiece() instanceof Queen && board.getBox(swX, swY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(swX, swY).san();
+                }
+                break;
+            }
+            swX-=1;
+            swY-=1;
+        }
+        // Northwest
+        int nwX = x+1;
+        int nwY = y-1;
+        while(inBounds(nwX) && inBounds(nwY)){
+            if(board.getBox(nwX, nwY).hasPiece()){
+                if(board.getBox(nwX, nwY).getPiece() instanceof Queen && board.getBox(nwX, nwY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(nwX, nwY).san();
+                }
+                break;
+            }
+            nwX+=1;
+            nwY-=1;
+        }
+        // Northeast
+        int neX = x+1;
+        int neY = y+1;
+        while(inBounds(neX) && inBounds(neY)){
+            if(board.getBox(neX, neY).hasPiece()){
+                if(board.getBox(neX, neY).getPiece() instanceof Queen && board.getBox(neX, neY).getPiece().isWhite() == currentTurn.whiteSide){
+                    return board.getBox(neX, neY).san();
+                }
+                break;
+            }
+            neX+=1;
+            neY+=1;
+        }
+
+        throw new Exception("Queen not found");
+    }
+
+    public String findKingSrc(String dest) throws Exception{
+        Spot destSpot = sanToSpot(dest);
+        int x = destSpot.getX();
+        int y = destSpot.getY();
+        int[] testX = new int[]{+1, +1, +1, +0, -1, -1, -1, +0};
+        int[] testY = new int[]{-1, +0, +1, +1, +1, +0, -1, -1};
+        for(int i = 0; i < 8; i++){
+            if(inBounds(x+testX[i]) && inBounds(y+testY[i])){
+                if(board.getBox(x+testX[i], y+testY[i]).hasPiece()){
+                    if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof King && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == currentTurn.whiteSide){
+                        return board.getBox(x+testX[i], y+testY[i]).san();
+                    }
+                }
+            }
+        }
+        throw new Exception("King not found");
     }
 
     public Spot sanToSpot(String SAN){
