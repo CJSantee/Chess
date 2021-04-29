@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import chess.Pieces.Bishop;
 import chess.Pieces.King;
@@ -16,22 +17,27 @@ import chess.Player.Player;
 public class Game {
     private Player[] players;
     private Board board;
-    private Player currentTurn;
+    private boolean whiteMove;
     private GameStatus status;
     private List<Move> movesPlayed;
+    private int halfmoveClock;
+    private int fullmoveClock;
 
     // Default game constructor
     public Game(){
         players = new Player[2];
         players[0] = new HumanPlayer(true);
         players[1] = new ComputerPlayer(false);
-        currentTurn = players[0];
+        whiteMove = true;
 
         board = new Board();
 
         movesPlayed = new ArrayList<Move>();
 
         status = GameStatus.ACTIVE;
+
+        halfmoveClock = 0;
+        fullmoveClock = 0;
     }
 
     // Game constructor given players
@@ -39,18 +45,17 @@ public class Game {
         players = new Player[2];
         players[0] = p1;
         players[1] = p2;
-
-        if(p1.isWhiteSide()){
-            currentTurn = p1;
-        } else {
-            currentTurn = p2;
-        }
+        
+        whiteMove = true;
 
         board = new Board();
 
         movesPlayed = new ArrayList<Move>();
 
         status = GameStatus.ACTIVE;
+
+        halfmoveClock = 0;
+        fullmoveClock = 0;
     }
 
     // Game constructor with Forsyth-Edwards Notation
@@ -63,13 +68,13 @@ public class Game {
         char activeColor = fenArr[1].charAt(0);
         String castling = fenArr[2];
         String enPassant = fenArr[3];
-        int halfmoveClock = Integer.parseInt(fenArr[4]);
-        int fullmoveClock = Integer.parseInt(fenArr[5]);
+        halfmoveClock = Integer.parseInt(fenArr[4]);
+        fullmoveClock = Integer.parseInt(fenArr[5]);
 
         players = new Player[2];
         players[0] = new HumanPlayer(true);
         players[1] = new ComputerPlayer(false);
-        currentTurn = activeColor == 'w' ? players[0] : players[1];
+        whiteMove = activeColor == 'w';
 
         board = new Board(position);
 
@@ -82,18 +87,47 @@ public class Game {
         return board;
     }
 
-    public Player getCurrentTurn() {
-        return currentTurn;
+    public Player getCurrentTurn() throws Exception {
+        for(Player p:players){
+            if(whiteMove == p.isWhiteSide()){
+                return  p;
+            }
+        }
+        throw new Exception("Player not found");
     }
-    public void setCurrentTurn(Player player){
-        this.currentTurn = player;
-    } 
+
+    public boolean getwhiteMove(){
+        return this.whiteMove;
+    }
+    public void setWhiteMove(boolean whiteMove) {
+        this.whiteMove = whiteMove;
+    }
 
     public GameStatus getStatus() {
         return status;
     }
     public void setStatus(GameStatus status){
         this.status = status;
+    }
+
+    public int getHalfmoveClock(){
+        return this.halfmoveClock;
+    }
+    public void setHalfmoveClock(int moves){
+        this.halfmoveClock = moves;
+    }
+    public void incrementHalfmoveClock(){
+        this.halfmoveClock+=1;
+    }
+
+    public int getFullmoveClock(){
+        return this.fullmoveClock;
+    }
+    public void setFullmoveClock(int moves){
+        this.fullmoveClock = moves;
+    }
+    public void incrementFullmoveClock(){
+        this.fullmoveClock+=1;
     }
 
     public boolean isEnd(){
@@ -121,7 +155,7 @@ public class Game {
                 src += (Character.getNumericValue(a[3])-1);
             }else{
                 dest = a[0] +""+ a[1];
-                src += findPawnSrcRank(dest, currentTurn.whiteSide);
+                src += findPawnSrcRank(dest, whiteMove);
             }
         }
         // Rook Move
@@ -179,7 +213,7 @@ public class Game {
 
         start = sanToSpot(src);
         end = sanToSpot(dest);
-        Move move = new Move(currentTurn, start, end);
+        Move move = new Move(this.getCurrentTurn(), start, end);
         return move;
     }
 
@@ -207,7 +241,7 @@ public class Game {
         int y = destSpot.getY();
         for(int left = y-1; left >= 0; left--){
             if(board.getBox(x, left).hasPiece()){
-                if(board.getBox(x, left).getPiece() instanceof Rook && board.getBox(x, left).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(x, left).getPiece() instanceof Rook && board.getBox(x, left).getPiece().isWhite() == whiteMove){
                     return board.getBox(x, left).san();
                 }
                 break;
@@ -215,7 +249,7 @@ public class Game {
         }
         for(int right = y+1; right < 8; right++){
             if(board.getBox(x, right).hasPiece()){
-                if(board.getBox(x, right).getPiece() instanceof Rook && board.getBox(x, right).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(x, right).getPiece() instanceof Rook && board.getBox(x, right).getPiece().isWhite() == whiteMove){
                     return board.getBox(x, right).san();
                 }
                 break;
@@ -223,7 +257,7 @@ public class Game {
         }
         for(int up = x+1; up < 8; up++){
             if(board.getBox(up, y).hasPiece()){
-                if(board.getBox(up, y).getPiece() instanceof Rook && board.getBox(up, y).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(up, y).getPiece() instanceof Rook && board.getBox(up, y).getPiece().isWhite() == whiteMove){
                     return board.getBox(up, y).san();
                 }
                 break;
@@ -231,7 +265,7 @@ public class Game {
         }
         for(int down = x-1; down >= 0; down--){
             if(board.getBox(down, y).hasPiece()){
-                if(board.getBox(down, y).getPiece() instanceof Rook && board.getBox(down, y).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(down, y).getPiece() instanceof Rook && board.getBox(down, y).getPiece().isWhite() == whiteMove){
                     return board.getBox(down, y).san();
                 }
                 break;
@@ -249,7 +283,7 @@ public class Game {
         for(int i = 0; i < 8; i++){
             if(inBounds(x+testX[i])&&inBounds(y+testY[i])){
                 if(board.getBox(x+testX[i], y+testY[i]).hasPiece()){
-                    if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof Knight && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == currentTurn.whiteSide){
+                    if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof Knight && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == whiteMove){
                         return board.getBox(x+testX[i], y+testY[i]).san();
                     }
                 }
@@ -272,7 +306,7 @@ public class Game {
         int seY = y+1;
         while(inBounds(seX) && inBounds(seY)){
             if(board.getBox(seX, seY).hasPiece()){
-                if(board.getBox(seX, seY).getPiece() instanceof Bishop && board.getBox(seX, seY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(seX, seY).getPiece() instanceof Bishop && board.getBox(seX, seY).getPiece().isWhite() == whiteMove){
                     return board.getBox(seX, seY).san();
                 }
                 break;
@@ -285,7 +319,7 @@ public class Game {
         int swY = y-1;
         while(inBounds(swX) && inBounds(swY)){
             if(board.getBox(swX, swY).hasPiece()){
-                if(board.getBox(swX, swY).getPiece() instanceof Bishop && board.getBox(swX, swY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(swX, swY).getPiece() instanceof Bishop && board.getBox(swX, swY).getPiece().isWhite() == whiteMove){
                     return board.getBox(swX, swY).san();
                 }
                 break;
@@ -298,7 +332,7 @@ public class Game {
         int nwY = y-1;
         while(inBounds(nwX) && inBounds(nwY)){
             if(board.getBox(nwX, nwY).hasPiece()){
-                if(board.getBox(nwX, nwY).getPiece() instanceof Bishop && board.getBox(nwX, nwY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(nwX, nwY).getPiece() instanceof Bishop && board.getBox(nwX, nwY).getPiece().isWhite() == whiteMove){
                     return board.getBox(nwX, nwY).san();
                 }
                 break;
@@ -311,7 +345,7 @@ public class Game {
         int neY = y+1;
         while(inBounds(neX) && inBounds(neY)){
             if(board.getBox(neX, neY).hasPiece()){
-                if(board.getBox(neX, neY).getPiece() instanceof Bishop && board.getBox(neX, neY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(neX, neY).getPiece() instanceof Bishop && board.getBox(neX, neY).getPiece().isWhite() == whiteMove){
                     return board.getBox(neX, neY).san();
                 }
                 break;
@@ -330,7 +364,7 @@ public class Game {
         // Left
         for(int left = y-1; left >= 0; left--){
             if(board.getBox(x, left).hasPiece()){
-                if(board.getBox(x, left).getPiece() instanceof Queen && board.getBox(x, left).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(x, left).getPiece() instanceof Queen && board.getBox(x, left).getPiece().isWhite() == whiteMove){
                     return board.getBox(x, left).san();
                 }
                 break;
@@ -339,7 +373,7 @@ public class Game {
         // Right
         for(int right = y+1; right < 8; right++){
             if(board.getBox(x, right).hasPiece()){
-                if(board.getBox(x, right).getPiece() instanceof Queen && board.getBox(x, right).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(x, right).getPiece() instanceof Queen && board.getBox(x, right).getPiece().isWhite() == whiteMove){
                     return board.getBox(x, right).san();
                 }
                 break;
@@ -348,7 +382,7 @@ public class Game {
         // Up
         for(int up = x+1; up < 8; up++){
             if(board.getBox(up, y).hasPiece()){
-                if(board.getBox(up, y).getPiece() instanceof Queen && board.getBox(up, y).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(up, y).getPiece() instanceof Queen && board.getBox(up, y).getPiece().isWhite() == whiteMove){
                     return board.getBox(up, y).san();
                 }
                 break;
@@ -357,7 +391,7 @@ public class Game {
         // Down
         for(int down = x-1; down >= 0; down--){
             if(board.getBox(down, y).hasPiece()){
-                if(board.getBox(down, y).getPiece() instanceof Queen && board.getBox(down, y).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(down, y).getPiece() instanceof Queen && board.getBox(down, y).getPiece().isWhite() == whiteMove){
                     return board.getBox(down, y).san();
                 }
                 break;
@@ -368,7 +402,7 @@ public class Game {
         int seY = y+1;
         while(inBounds(seX) && inBounds(seY)){
             if(board.getBox(seX, seY).hasPiece()){
-                if(board.getBox(seX, seY).getPiece() instanceof Queen && board.getBox(seX, seY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(seX, seY).getPiece() instanceof Queen && board.getBox(seX, seY).getPiece().isWhite() == whiteMove){
                     return board.getBox(seX, seY).san();
                 }
                 break;
@@ -381,7 +415,7 @@ public class Game {
         int swY = y-1;
         while(inBounds(swX) && inBounds(swY)){
             if(board.getBox(swX, swY).hasPiece()){
-                if(board.getBox(swX, swY).getPiece() instanceof Queen && board.getBox(swX, swY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(swX, swY).getPiece() instanceof Queen && board.getBox(swX, swY).getPiece().isWhite() == whiteMove){
                     return board.getBox(swX, swY).san();
                 }
                 break;
@@ -394,7 +428,7 @@ public class Game {
         int nwY = y-1;
         while(inBounds(nwX) && inBounds(nwY)){
             if(board.getBox(nwX, nwY).hasPiece()){
-                if(board.getBox(nwX, nwY).getPiece() instanceof Queen && board.getBox(nwX, nwY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(nwX, nwY).getPiece() instanceof Queen && board.getBox(nwX, nwY).getPiece().isWhite() == whiteMove){
                     return board.getBox(nwX, nwY).san();
                 }
                 break;
@@ -407,7 +441,7 @@ public class Game {
         int neY = y+1;
         while(inBounds(neX) && inBounds(neY)){
             if(board.getBox(neX, neY).hasPiece()){
-                if(board.getBox(neX, neY).getPiece() instanceof Queen && board.getBox(neX, neY).getPiece().isWhite() == currentTurn.whiteSide){
+                if(board.getBox(neX, neY).getPiece() instanceof Queen && board.getBox(neX, neY).getPiece().isWhite() == whiteMove){
                     return board.getBox(neX, neY).san();
                 }
                 break;
@@ -428,7 +462,7 @@ public class Game {
         for(int i = 0; i < 8; i++){
             if(inBounds(x+testX[i]) && inBounds(y+testY[i])){
                 if(board.getBox(x+testX[i], y+testY[i]).hasPiece()){
-                    if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof King && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == currentTurn.whiteSide){
+                    if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof King && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == whiteMove){
                         return board.getBox(x+testX[i], y+testY[i]).san();
                     }
                 }
@@ -473,16 +507,14 @@ public class Game {
         // souce piece not null?
         if(sourcePiece == null) return false;
         // valid player?
-        if(player != currentTurn) return false;
+        if(player.whiteSide != whiteMove) return false;
         // piece color matches player color?
         if(sourcePiece.isWhite() != player.isWhiteSide()) return false;
         // valid move?
-        if(!sourcePiece.canMove(board, move.getStart(), move.getEnd())) return false;
+        // if(!sourcePiece.canMove(board, move.getStart(), move.getEnd())) return false;
         // kill?
-        Piece destPiece = move.getEnd().getPiece();
-        if(destPiece != null){
-            destPiece.setKilled(true);
-            move.setPieceKilled(destPiece);
+        if(move.getEnd().hasPiece()){
+            move.getEnd().setPiece(null);
         }
 
         // castling?
@@ -490,17 +522,28 @@ public class Game {
         // store the move
         movesPlayed.add(move);
 
-        move.getEnd().setPiece(move.getStart().getPiece());
-        move.getStart().setPiece(null);
+        board.update(move);
 
         // Set the current turn to the other player
-        if (this.currentTurn == players[0]){
-            this.currentTurn = players[1];
-        } else {
-            this.currentTurn = players[0];
-        }
+        whiteMove = !whiteMove;
 
         return true;
+    }
+
+    public void play() throws Exception{
+        Scanner sc = new Scanner(System.in);
+        board.print();
+        String cmd = sc.next();
+        while(!isEnd()){
+            if(cmd.equals("print")) board.print();
+            else if(cmd.equals("exit")) status = GameStatus.FORFEIT;
+            else{
+                Move move = sanToMove(cmd);
+                makeMove(move, getCurrentTurn());
+            }
+            cmd = sc.next();
+        }
+        sc.close();
     }
 
 }

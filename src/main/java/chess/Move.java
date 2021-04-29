@@ -1,42 +1,42 @@
 package chess;
-import chess.Pieces.Piece;
 import chess.Player.Player;
 
 public class Move {
     private Player player;
     private Spot start;
     private Spot end;
-    private Piece pieceMoved;
-    private Piece pieceKilled;
-    private boolean castlingMove = false;
+    private boolean capture; 
+    private boolean castle = false;
 
     public Move(Player player, Spot start, Spot end){
         this.player = player;
         this.start = start;
         this.end = end;
-        this.pieceMoved = start.getPiece();
+        capture = end.hasPiece();
     }
 
-    public boolean isCastlingMove() {
-        return this.castlingMove;
+    public boolean isCastle() {
+        return this.castle;
     }
-    public void setCastlingMove(boolean castlingMove) {
-        this.castlingMove = castlingMove;
+    public void setCastle(boolean castle) {
+        this.castle = castle;
     }
 
-    public Spot getStart(){
+    public boolean isCapture() {
+        return this.capture;
+    }
+
+    public void setCapture(boolean capture) {
+        this.capture = capture;
+    }
+
+    public Spot getStart() {
         return this.start;
     }
-    public Spot getEnd(){
+    public Spot getEnd() {
         return this.end;
     }
     
-    public Piece getPieceKilled(){
-        return this.pieceKilled;
-    }
-    public void setPieceKilled(Piece piece) {
-        this.pieceKilled = piece;
-        pieceKilled.setKilled(true);
-    }
+
     
 }

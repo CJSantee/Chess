@@ -204,6 +204,17 @@ public class Board {
         }
     }
 
+    public void update(Move move){
+        Spot start = move.getStart();
+        Spot end = move.getEnd();
+        int startX = start.getX();
+        int startY = start.getY();
+        int endX = end.getX();
+        int endY = end.getY();
+        boxes[endX][endY].setPiece(start.getPiece());
+        boxes[startX][startY].setPiece(null);
+    }
+
     // Export the board position in FEN
     public String fen(){
         String ret = "";
