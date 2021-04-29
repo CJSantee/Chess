@@ -182,4 +182,53 @@ public class GameTest {
 
     }
 
+    @Nested
+    @DisplayName("Test Knight Moves")
+    class testKnightMoves{
+        
+        @BeforeEach
+        void setUp() throws Exception{
+            game = new Game("8/8/4N3/2p5/3p4/8/8/6N1 w KQkq - 0 1");
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "Nc7, 5, 4, 6, 2",
+            "Nd8, 5, 4, 7, 3",
+            "Nf8, 5, 4, 7, 5",
+            "Ng7, 5, 4, 6, 6",
+            "Ng5, 5, 4, 4, 6",
+            "Nf4, 5, 4, 3, 5",
+            "Ne2, 0, 6, 1, 4",
+            "Nf3, 0, 6, 2, 5",
+            "Nh3, 0, 6, 2, 7"
+        })
+        void testKnightMove(String san, int startX, int startY, int endX, int endY) throws Exception{
+            System.out.println(san);
+            Move move = game.sanToMove(san);
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(startX, start.getX(), "Start x should equal: "+startX+" for "+san);
+            assertEquals(startY, start.getY(), "Start y should equal: "+startY+" for "+san);
+            assertEquals(endX, end.getX(), "End x should equal: "+endX+" for "+san);
+            assertEquals(endY, end.getY(), "End y should equal: "+endY+" for "+san);
+        }
+
+        @ParameterizedTest
+        @CsvSource({
+            "Nxc5, 5, 4, 4, 2",
+            "Nxd4, 5, 4, 3, 3"
+        })
+        void testKnightCapture(String san, int startX, int startY, int endX, int endY) throws Exception{
+            Move move = game.sanToMove(san);
+            Spot start = move.getStart();
+            Spot end = move.getEnd();
+            assertEquals(startX, start.getX(), "Start x should equal: "+startX+" for "+san);
+            assertEquals(startY, start.getY(), "Start y should equal: "+startY+" for "+san);
+            assertEquals(endX, end.getX(), "End x should equal: "+endX+" for "+san);
+            assertEquals(endY, end.getY(), "End y should equal: "+endY+" for "+san);
+        }
+
+    }
+
 }

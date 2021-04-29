@@ -3,6 +3,7 @@ package chess;
 import java.util.ArrayList;
 import java.util.List;
 
+import chess.Pieces.Knight;
 import chess.Pieces.Piece;
 import chess.Pieces.Rook;
 import chess.Player.ComputerPlayer;
@@ -127,6 +128,17 @@ public class Game {
             }
             src = findRookSrc(dest);
         }
+        // Knight Move
+        if(a[0]=='N'){
+            // Knight Capture
+            if(a[1] == 'x'){
+                dest = a[2] +""+ a[3];
+            }else{
+                dest = a[1] +""+ a[2];
+            }
+            src = findKnightSrc(dest);
+        }
+
         start = sanToSpot(src);
         end = sanToSpot(dest);
         Move move = new Move(currentTurn, start, end);
@@ -187,7 +199,32 @@ public class Game {
                 break;
             }
         }
-        throw new Exception("Rook Not Found");
+        throw new Exception("Rook not found");
+    }
+
+    public String findKnightSrc(String dest) throws Exception{
+        Spot destSpot = sanToSpot(dest);
+        int x = destSpot.getX();
+        int y = destSpot.getY();
+        int[] testX = new int[]{+2, +2, +1, -1, -2, -2, -1, +1};
+        int[] testY = new int[]{-1, +1, +2, +2, +1, -1, -2, -2};
+        for(int i = 0; i < 8; i++){
+            if(inBounds(x+testX[i])&&inBounds(y+testY[i])){
+                if(board.getBox(x+testX[i], y+testY[i]).hasPiece()){
+                    if(board.getBox(x+testX[i], y+testY[i]).getPiece() instanceof Knight && board.getBox(x+testX[i], y+testY[i]).getPiece().isWhite() == currentTurn.whiteSide){
+                        String ret = board.getBox(x+testX[i], y+testY[i]).san();
+                        System.out.println(ret);
+                        return ret;
+                    }
+                }
+            }
+        }
+        throw new Exception("Knight not found");
+    }
+
+    public boolean inBounds(int n){
+        if(n >= 0 && n < 8) return true;
+        return false;
     }
 
     public Spot sanToSpot(String SAN){
